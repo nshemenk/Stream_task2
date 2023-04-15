@@ -1,7 +1,4 @@
 import java.util.*;
-import java.util.stream.Collectors;
-
-
 public class Main {
     public static void main(String[] args) {
         List<String> names = Arrays.asList("Jack", "Connor", "Harry", "George", "Samuel", "John");
@@ -16,7 +13,6 @@ public class Main {
                     Education.values()[new Random().nextInt(Education.values().length)])
             );
         }
-
         // считаем количество несовершеннолетних (т.е. людей младше 18 лет)
         long numberOfChildren = persons.stream()
                 .filter(Person -> Person.getAge() < 18)
@@ -30,26 +26,12 @@ public class Main {
                 .map(Person::getFamily)
                 .toList();
 
-        // Получаем список женщин с высшим образованием от 18 до 60 лет
-        List<Person> womanList = persons.stream()
-                .filter(Person -> Person.getAge() >= 18 && Person.getAge() <= 60
-                        && Person.getSex().equals(Sex.WOMAN) && Person.getEducation().equals(Education.HIGHER))
-                .toList();
-
-        // Получаем список мужчин с высшим образованием от 18 до 65 лет
-        List<Person> manList = persons.stream()
-                .filter(Person -> Person.getAge() >= 18 && Person.getAge() <= 65
-                        && Person.getSex().equals(Sex.MAN) && Person.getEducation().equals(Education.HIGHER))
-                .toList();
-
-        // Получаем объединенный список людей с высшим образованием
-        List<Person> peopleList = new ArrayList<>();
-        peopleList.addAll(womanList);
-        peopleList.addAll(manList);
-
-        // Получаем отсортированный по фамилии объединенный список людей с высшим образованием
-        List<Person> sortedPeopleList = peopleList.stream()
+       // Получаем список потенциально работоспособных людей с высшим образованием
+        List<Person> peopleList = persons.stream()
+                .filter(Person -> Person.getEducation().equals(Education.HIGHER))
+                .filter(Person -> (Person.getSex().equals(Sex.WOMAN) && Person.getAge() >= 18 && Person.getAge() <= 60)
+                        || (Person.getSex().equals(Sex.MAN) && Person.getAge() >= 18 && Person.getAge() <= 65))
                 .sorted(Comparator.comparing(Person::getFamily))
-                .collect(Collectors.toList());
+                .toList();
     }
 }
